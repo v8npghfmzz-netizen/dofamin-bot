@@ -5,21 +5,30 @@ import json
 import os
 from datetime import datetime, date
 from aiogram import Bot, Dispatcher, types, F
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.filters import Command
-from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.storage.memory import MemoryStorage
 
 # --- Налаштування бота ---
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_PASSWORD = "WaterBoss_2025"
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 # Monobank Jar (встав свою):
 # https://send.monobank.ua/jar/9dJNHNB4vS
 
+# Перевірка токена
+if not BOT_TOKEN:
+    raise ValueError("BOT_TOKEN не знайдено! Переконайтеся, що змінна середовища BOT_TOKEN встановлена.")
+
 logging.basicConfig(level=logging.INFO)
-bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode="HTML"))
-dp = Dispatcher()
+bot = Bot(
+    token=BOT_TOKEN,
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+)
+dp = Dispatcher(storage=MemoryStorage())
 
 DATA_FILE = "bot_data.json"
 ADMINS_FILE = "admins.json"
